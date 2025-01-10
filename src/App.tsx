@@ -1,35 +1,54 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useForm } from "react-hook-form";
+
+import "./App.css";
+
+type FormData = {
+  firstName: string;
+  lastName: string;
+  email: string;
+  file: File;
+};
 
 function App() {
-  const [count, setCount] = useState(0)
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormData>();
+
+  const onSubmit = handleSubmit((data) => console.log(data));
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <form className="flex flex-col text-left gap-2" onSubmit={onSubmit}>
+      <label>First Name</label>
+      <input
+        {...register("firstName", { required: "This field is required" })}
+      />
+      {errors.firstName?.message && <p>{errors.lastName?.message}</p>}
+      <label>Last Name</label>
+      <input
+        {...register("lastName", { required: "This field is required" })}
+      />
+      {errors.lastName?.message && <p>{errors.lastName?.message}</p>}
+      <label>Email</label>
+      <input
+        {...register("email", {
+          required: "This field is required",
+          pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+        })}
+      />
+      {errors.lastName?.message && <p>{errors.lastName?.message}</p>}
+      <label>Avatar</label>
+      <input
+        type="file"
+        accept=""
+        {...register("file", { required: "This field is required" })}
+      />
+      {errors.file?.message && <p>{errors.lastName?.message}</p>}
+
+      <input className="mt-5 p-2 bg-white text-black" type="submit" />
+    </form>
+  );
 }
 
-export default App
+export default App;
