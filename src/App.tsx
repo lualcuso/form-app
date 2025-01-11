@@ -6,7 +6,7 @@ type FormData = {
   firstName: string;
   lastName: string;
   email: string;
-  file: File;
+  file: File[];
 };
 
 function App() {
@@ -34,17 +34,30 @@ function App() {
       <input
         {...register("email", {
           required: "This field is required",
-          pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+          pattern: {
+            value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+            message: "Enter a valid email address",
+          },
         })}
       />
-      {errors.lastName?.message && <p>{errors.lastName?.message}</p>}
+      {errors.email?.message && <p>{errors.email?.message}</p>}
       <label>Avatar</label>
       <input
         type="file"
         accept=""
-        {...register("file", { required: "This field is required" })}
+        {...register("file", {
+          required: "This field is required",
+          validate: {
+            validate: (file) => {
+              return (
+                file[0].size < 25000000 ||
+                "File must be equal or smaller than 25mb"
+              );
+            },
+          },
+        })}
       />
-      {errors.file?.message && <p>{errors.lastName?.message}</p>}
+      {errors.file?.message && <p>{errors.file?.message}</p>}
 
       <input className="mt-5 p-2 bg-white text-black" type="submit" />
     </form>
